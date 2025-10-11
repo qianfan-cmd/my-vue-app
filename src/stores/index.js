@@ -48,34 +48,75 @@ export const useAllDataStore = defineStore('content',() =>{
     
     //实现动态路由
     const addMenu = (router) =>{
-      const menu = state.value.menuList;
+      const menu = state.value.menuList;//拿到该用户的菜单
+      /**
+       *  [
+             {
+              path: '/home',
+              name: 'home',
+              label: '首页',
+              icon: 'house',
+              url: 'Home'
+            },]
+       */
       const module = import.meta.glob('../views/**/*.vue');//这个是vite里的，**代表0个或多个文件
-      const routeArr = [];
+      /**
+       * 对import.meta.glob()的代码解释
+       * 作用：批量导入匹配指定模式的所有模块
+       * return:Object,键是文件路径，值是返回Promise的导入函数
+       * 
+       * glob模式是匹配符模式
+       * '../views/**\/*.vue'解释
+       * ../views/:从当前文件所在目录的上一级目录的views文件夹开始
+       * **：匹配任意深度的子目录（也就是views下的所有目录
+       * *.vue:匹配目录下的所有.vue文件
+       * 执行后module类似
+       * {
+         '../views/home/index.vue': () => import('../views/home/index.vue'),
+         '../views/about/index.vue': () => import('../views/about/index.vue'),
+         '../views/user/profile.vue': () => import('../views/user/profile.vue'),
+         // ... 所有匹配的 vue 文件
+         }
+       */
+      
+      //设置路由---------------------------------------------------------------
+      const routeArr = [];//用于存储当前用户的菜单路由
       menu.forEach((item)=>{
-         if(item.chlidren){
+         if(item.chlidren){//如果有子页,为子页添加对应的组件
             item.chlidreen.forEach(val=>{
-            let url = `../views/${val.url}.vue`;
-            val.component = module[url];
-            routeArr.push(...item.chlidren);
-         })
-         }else {
+            let url = `../views/${val.url}.vue`;//这里的url是对应组件的url../views/Home.vue
+            val.component = module[url];//导入对应组件，导入了组件才知道显示什么内容
+         });
+          routeArr.push(...item.chlidren);//统一导入
+         }else {//没子页就直接添加组件后添加进routeArr中
             let url = `../views/${item.url}.vue`;
             item.component = module[url];
             routeArr.push(item);
          }
       });
 
+      //重置Route，修改多账户登录的bug------------------------------------------------------
+      //router是外部传进来的路由控制器
       console.log(router.getRoutes());//查看当前路由
-      let routers = router.getRoutes();//拿到当前路由
+      let routers = router.getRoutes();//拿到当前用户菜单路由
       //多账号登录bug处理
       routers.forEach(item => {
          if(item.name === 'main' || item.name === 'login'){
-            return;//不做处理
+            return;//保留默认页，不做处理
          }else {
             router.removeRoute(item.name);//移除路由
          }
       })
+      //--------------------------------------------------------------
+
       routeArr.forEach(item=>{
+         //addRoute是追加操作，不是替换，但是不会重复追加
+         /**router.addRoute解释
+          * 参数1：parentName-父级路由的名称（这里是main)
+          * 参数2：要添加的路由配置对象
+          * 代码含义：​​将 item路由添加到名为 "main"的路由的子路由中​
+          * 
+          */
          state.value.routerList.push(router.addRoute("main",item));
       })
     }
