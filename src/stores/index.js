@@ -145,6 +145,19 @@ export const useAllDataStore = defineStore('content',() =>{
          state.value.routerList.push(router.addRoute("main",item));
       })
     }
+
+          //退出时对数据进行清除
+      const clean = () => {
+          state.value.routerList.forEach((item)=>{
+            console.log(item);/**打印出来是() => {
+            removeRoute(originalMatcher);
+           }*/
+            if(item) item();//所以item()就是清除路由了
+          });
+          state.value = initState();
+          //删除本地缓存
+          localStorage.removeItem('store');
+      }
     //本来要return { count, name, doubleCount, increment }
     //这样子返回一大堆变量，定义一个初始化函数一起返回
     return {
@@ -153,5 +166,6 @@ export const useAllDataStore = defineStore('content',() =>{
         updateTags,
         updateMenuList,
         addMenu,
+        clean,
     };
 })

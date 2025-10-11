@@ -22,7 +22,7 @@
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item>个人中心</el-dropdown-item>
-        <el-dropdown-item>退出</el-dropdown-item>
+        <el-dropdown-item @click="handleLoginOut">退出</el-dropdown-item>
 
       </el-dropdown-menu>
     </template>
@@ -36,7 +36,7 @@
 import { ref,computed } from 'vue'
 import { Menu, Operation } from '@element-plus/icons-vue'
 import { useAllDataStore } from '../stores';
-
+import {useRouter} from 'vue-router'
 
 const getImageUrl = (user) => {
     //URL(url,base) 相对路径,绝对路径
@@ -47,6 +47,13 @@ const getImageUrl = (user) => {
 const store = useAllDataStore();
 const Collapse = () => {
     store.state.isCollapse = !store.state.isCollapse;
+}
+
+const router = useRouter();
+const handleLoginOut = () => {
+    //退出就是重置数据
+    store.clean();
+   router.push('/login');
 }
 </script>
 
