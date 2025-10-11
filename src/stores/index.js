@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia';
-import {ref} from 'vue'
+import {ref,watch} from 'vue'
 
 //初始化要传递的数据
 function initState() {
@@ -28,6 +28,22 @@ export const useAllDataStore = defineStore('content',() =>{
     //function()就是actions
     const state = ref(initState());
 
+    watch(state,(newObj)=>{
+      if(!newObj.token) return;
+      /**
+       * 用localStorage将数据长期保存在本地
+       * • 保存数据：localStorage.setItem(key,value);
+       • 读取数据：localStorage.getItem(key);
+       • 删除单个数据：localStorage.removeItem(key);
+       • 删除所有数据：localStorage.clear();
+       • 得到某个索引的key：localStorage.key(index);
+       提示: 键/值对通常以字符串存储，你可以按自己的需要转换该格式。
+       */
+      localStorage.setItem('store',JSON.stringify(newObj));//将对象转换成字符串存储,两个参数组成键值对
+   },
+    {deep:true}//进行深度监听
+   )
+
     const selectMenu = (val) => {
       if(val.name === 'home'){
         state.value.currentMenu = null;
@@ -47,7 +63,16 @@ export const useAllDataStore = defineStore('content',() =>{
     }
     
     //实现动态路由
-    const addMenu = (router) =>{
+    const addMenu = (router,type) =>{
+      if(type === "refresh"){
+         if(JSON.parse(localStorage.getItem('store'))){
+            state.value = JSON.parse(localStorage.getItem('store'));
+            //
+            state.value.routerList = [];
+         }else{
+            return;
+         }
+      }
       const menu = state.value.menuList;//拿到该用户的菜单
       /**
        *  [
