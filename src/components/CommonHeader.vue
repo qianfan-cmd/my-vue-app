@@ -5,9 +5,12 @@
             <el-button size="small">
                 <component class="icons" :is="Operation" @click="Collapse"></component>
             </el-button>
-            <!-- 面包屑，就是顶部导航栏的意思 -->
+            <!-- 面包屑，就是顶部导航栏的意思 点击可实现路由跳转-->
             <el-breadcrumb separator="/" class="bread">
                 <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                <el-breadcrumb-item 
+                v-if="breadMenu" :to="breadMenu.path"
+                >{{ breadMenu.label }}</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="r-content">
@@ -55,6 +58,8 @@ const handleLoginOut = () => {
     store.clean();
    router.push('/login');
 }
+
+const breadMenu = computed(()=>store.state.breadMenu);
 </script>
 
 <style lang="less" scoped>

@@ -13,7 +13,7 @@ function initState() {
        icon:'home'
     }
        ],
-       currentMenu: null,
+       breadMenu: null,//在面包屑上显示当前页面
        menuList:[],
        token:"",
        routerList: [],
@@ -28,7 +28,17 @@ export const useAllDataStore = defineStore('content',() =>{
     //function()就是actions
     const state = ref(initState());
 
+    //watch(监听的数据，回调的函数) state发生变化就调用func，这个回调函数遵守(新值，旧值)的顺序赋值，跟变量名没关系
     watch(state,(newObj)=>{
+      /**
+       * //watch(state, callback, options);
+       * option:配置对象，包含以下常用属性
+       * deep:是否深度监听 默认监听之后监听对象本身的引用变化，
+       * 例如：state.value = {...state.value}这返回的是一个在新的addr下的新对象，这是一段浅拷贝，原理见笔记
+       * 深度监听就是里面只要有任何的改动都会被监听并触发回调函数
+       * immediate:是否立刻执行回调
+       * flush:控制回调的触发时机
+       */
       if(!newObj.token) return;
       /**
        * 用localStorage将数据长期保存在本地
@@ -46,10 +56,11 @@ export const useAllDataStore = defineStore('content',() =>{
 
     const selectMenu = (val) => {
       if(val.name === 'home'){
-        state.value.currentMenu = null;
+        state.value.breadMenu = null;//面包屑默认显示主页
       }else{
         let index = state.value.tags.findIndex(item=>item.name === val.name);
         index === -1 ? state.value.tags.push(val) : "";//没有点击过就添加进去
+        state.value.breadMenu = val;
       }
     }
 
@@ -126,7 +137,7 @@ export const useAllDataStore = defineStore('content',() =>{
       let routers = router.getRoutes();//拿到当前用户菜单路由
       //多账号登录bug处理
       routers.forEach(item => {
-         if(item.name === 'main' || item.name === 'login'){
+         if(item.name === 'main' || item.name === 'login' || item.name == "404"){
             return;//保留默认页，不做处理
          }else {
             router.removeRoute(item.name);//移除路由
@@ -142,7 +153,9 @@ export const useAllDataStore = defineStore('content',() =>{
           * 代码含义：​​将 item路由添加到名为 "main"的路由的子路由中​
           * 
           */
-         state.value.routerList.push(router.addRoute("main",item));
+         state.value.routerList.push(router.addRoute("main",item));//routerList用于进行持久化存储
+      
+      //ps；routeArr和routerList的区别。前者相当于一个中间件，后者用于长期存储最终的结果
       })
     }
 
