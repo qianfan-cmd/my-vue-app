@@ -7,7 +7,7 @@ const routes = [
         path:'/',
         name:'main',
         component: () => import('@/views/Main.vue'),
-        redirect:"/home",//重定向，默认显示home
+        redirect:"/login",//重定向，默认显示home
         children:[]
     },
     {
