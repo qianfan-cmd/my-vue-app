@@ -7,7 +7,7 @@ const routes = [
         path:'/',
         name:'main',
         component: () => import('@/views/Main.vue'),
-        redirect:"/home",//重定向，默认显示home
+        redirect:"/login",//重定向，默认显示home
         children:[]
     },
     {
@@ -20,6 +20,11 @@ const routes = [
         name:'404',
         component: () => import("@/views/404.vue"),
     },
+    {
+        path:'/owner',
+        name:'owner',
+        component: () => import("@/views/Owner.vue")
+    }
 ];
 
 //配置信息

@@ -137,7 +137,7 @@ export const useAllDataStore = defineStore('content',() =>{
       let routers = router.getRoutes();//拿到当前用户菜单路由
       //多账号登录bug处理
       routers.forEach(item => {
-         if(item.name === 'main' || item.name === 'login' || item.name == "404"){
+         if(item.name === 'main' || item.name === 'login' || item.name == "404" || item.name === 'owner'){
             return;//保留默认页，不做处理
          }else {
             router.removeRoute(item.name);//移除路由

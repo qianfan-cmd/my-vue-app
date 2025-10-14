@@ -24,7 +24,7 @@
     </span>
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item>个人中心</el-dropdown-item>
+        <el-dropdown-item @click="changeUserInfo">个人中心</el-dropdown-item>
         <el-dropdown-item @click="handleLoginOut">退出</el-dropdown-item>
 
       </el-dropdown-menu>
@@ -60,6 +60,10 @@ const handleLoginOut = () => {
 }
 
 const breadMenu = computed(()=>store.state.breadMenu);
+
+const changeUserInfo = () => {
+    router.push('/owner')
+}
 </script>
 
 <style lang="less" scoped>
