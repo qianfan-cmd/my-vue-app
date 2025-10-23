@@ -2,6 +2,9 @@ import Mock from 'mockjs';
 import homeApi from './mockData/home';
 import userApi from './mockData/user';
 import menuApi from './mockData/permission'
+//mock是在浏览器层面拦截请求，vite代码是在服务器层面拦截请求，所以两者的区别是：
+//mock是在浏览器层面拦截请求，可以模拟数据，可以设置延迟时间，可以设置错误信息等；
+//vite是在服务器层面拦截请求，可以设置请求头，可以设置响应头，可以设置响应体等。
 //拦截路径 拦截方法 制造出的假数据
 //接口，方式，数据
 
